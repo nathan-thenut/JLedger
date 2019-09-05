@@ -21,14 +21,14 @@ public class LedgerTest {
         List<Posting> additions = new ArrayList<>(); 
         List<Posting> removals = new ArrayList<>(); 
         
-        additions.add(new Posting(assets, new BigDecimal("150.0"), opening));
-        removals.add(new Posting(equity, new BigDecimal("-150.0"), opening));
+        additions.add(new Posting(assets, new BigDecimal("150.0"), "EUR", opening));
+        removals.add(new Posting(equity, new BigDecimal("-150.0"), "EUR", opening));
 
-        additions.add(new Posting(assets, new BigDecimal("150.0"), opening));
-        removals.add(new Posting(equity, new BigDecimal("-150.0"), opening));
+        additions.add(new Posting(assets, new BigDecimal("150.0"), "EUR", opening));
+        removals.add(new Posting(equity, new BigDecimal("-150.0"), "EUR", opening));
 
-        additions.add(new Posting(equity, new BigDecimal("150.0"), opening));
-        removals.add(new Posting(liabilities, new BigDecimal("-150.0"), opening));
+        additions.add(new Posting(equity, new BigDecimal("150.0"), "EUR", opening));
+        removals.add(new Posting(liabilities, new BigDecimal("-150.0"), "EUR", opening));
         
         opening.addAdditions(additions);
         opening.addRemovals(removals);
@@ -45,7 +45,7 @@ public class LedgerTest {
         assertEquals(
             "Assets should have a Transaction Amount of 300", 
             new BigDecimal("300.0"),
-            assets.getAmount()
+            assets.getAmount("EUR")
         );
         
     }

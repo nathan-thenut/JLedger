@@ -1,7 +1,10 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Transaction {
     
@@ -20,20 +23,43 @@ public class Transaction {
     
     
     public boolean checkTransactionBalance() {
-        boolean balanceIsZero = false;
-
-        BigDecimal amountAdditions = this.additions.stream()
-            .map(p -> p.getAmount())
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal amountRemovals = this.removals.stream()
-            .map(p -> p.getAmount())
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
         
-        if (amountAdditions.add(amountRemovals).compareTo(new BigDecimal("0")) == 0) {
-            balanceIsZero = true;
+        List<String> currenciesAdditions = this.additions.stream()
+            .map(p -> p.getCurrency())
+            .distinct()
+            .collect(Collectors.toList());
+
+        List<String> currenciesRemovals = this.removals.stream()
+            .map(p -> p.getCurrency())
+            .distinct()
+            .collect(Collectors.toList());
+
+        if (!new HashSet<>(currenciesAdditions).equals(new HashSet<>(currenciesRemovals))) {
+            //TODO: Debug msg?
+            return false;
         }
 
-        return balanceIsZero;
+
+        for (String currency : currenciesAdditions) {
+
+            BigDecimal amountAdditions = this.additions.stream()
+                .filter(p -> p.getCurrency().equals(currency))
+                .map(p -> p.getAmount())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal amountRemovals = this.removals.stream()
+                .filter(p -> p.getCurrency().equals(currency))
+                .map(p -> p.getAmount())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            if (amountAdditions.add(amountRemovals).compareTo(new BigDecimal("0")) != 0) {
+                //TODO: Debug msg?
+                return false;
+            }
+        }
+        
+
+        return true;
     }
     
     
@@ -68,6 +94,11 @@ public class Transaction {
 
     public void addRemovals(List<Posting> newRemovals) {
         this.removals.addAll(newRemovals);
+    }
+
+    public List<Posting> getAllPostings() {
+        return Stream.concat(this.additions.stream(), this.removals.stream())
+            .collect(Collectors.toList());
     }
 
     public String getDescription() {

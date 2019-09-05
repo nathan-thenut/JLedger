@@ -10,6 +10,7 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
+    id "com.scuilion.syntastic" version "0.3.8"
 }
 
 version = '0.1.0'

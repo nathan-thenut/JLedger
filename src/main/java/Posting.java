@@ -4,6 +4,7 @@ public class Posting {
     
     private Account account;
     private BigDecimal amount;
+    private String currency;
     private PostingType type;
     private Transaction transaction;
     
@@ -12,9 +13,10 @@ public class Posting {
         REMOVAL
     }
 
-    public Posting(Account account, BigDecimal amount, Transaction transaction) {
+    public Posting(Account account, BigDecimal amount, String currency, Transaction transaction) {
         this.account = account;
         this.amount = amount;
+        this.currency = currency;
         this.transaction = transaction;
         updateType();
     }
@@ -56,6 +58,14 @@ public class Posting {
 
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
 
