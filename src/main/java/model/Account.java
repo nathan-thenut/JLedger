@@ -1,5 +1,8 @@
 package jledger.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Account {
-    
+   
+    private final Logger LOG = LoggerFactory.getLogger(Account.class);
+
     private Account parent;
     private List<Account> children;
     private String name;
@@ -49,8 +54,8 @@ public class Account {
                 .filter(p -> p.getAccount().equals(this) && p.getCurrency().equals(currency))
                 .map(p -> p.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-       
-            System.out.println(this.name + " " + currency + " Additions: " + additions);
+            
+            LOG.debug("{} {} Additions: {}", this.name, currency, additions);
 
             BigDecimal removals = this.transactions.stream()
                 .map(t -> t.getRemovals())
@@ -59,7 +64,7 @@ public class Account {
                 .map(p -> p.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            System.out.println(this.name + " " + currency + " Removals: " + removals);
+            LOG.debug("{} {} Removals: {}", this.name, currency, removals);
             
             BigDecimal amount = BigDecimal.ZERO;
 
@@ -67,11 +72,11 @@ public class Account {
                 amount = amount.add(child.getAmount(currency));
             }
 
-            System.out.println(this.name + " " + currency + " Amount after adding Children's amount: " + amount);
+            LOG.debug("{} {} Amount after adding Children's amount: {}", this.name, currency, amount);
             amount = amount.add(additions);
-            System.out.println(this.name + " " + currency + " Amount after adding additions: " + amount);
+            LOG.debug("{} {} Amount after adding additions: {}", this.name, currency, amount);
             amount = amount.add(removals);
-            System.out.println(this.name + " " + currency + " Amount after adding removals: " + amount);
+            LOG.debug("{} {} Amount after adding Children's removals: {}", this.name, currency, amount);
 
             currencyAmountMap.put(currency, amount);
 

@@ -1,5 +1,8 @@
 package jledger.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +13,8 @@ import java.util.stream.Stream;
 
 public class Transaction {
     
+    private final Logger LOG = LoggerFactory.getLogger(Transaction.class);
+
     private Date date;
     private String description;
     private List<Posting> additions;
@@ -37,7 +42,7 @@ public class Transaction {
             .collect(Collectors.toList());
 
         if (!new HashSet<>(currenciesAdditions).equals(new HashSet<>(currenciesRemovals))) {
-            //TODO: Debug msg?
+            LOG.error("{} {} - Number of currencies between additions and removals does not match.", this.date, this.description);
             return false;
         }
 
@@ -55,7 +60,7 @@ public class Transaction {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
             
             if (amountAdditions.add(amountRemovals).compareTo(new BigDecimal("0")) != 0) {
-                //TODO: Debug msg?
+                LOG.error("{} {} - Additions and removals do not match.", this.date, this.description);
                 return false;
             }
         }
