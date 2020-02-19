@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LedgerTest {
     @Test public void testOpeningTransaction() {
@@ -36,8 +36,8 @@ public class LedgerTest {
         opening.addRemovals(removals);
 
         assertTrue(
-            "Transaction Balance should be Zero, so this should be true",
-            opening.checkTransactionBalance()
+            opening.checkTransactionBalance(),
+            "Transaction Balance should be Zero, so this should be true"
         ); 
         
         assets.addTransaction(opening);
@@ -45,9 +45,9 @@ public class LedgerTest {
         liabilities.addTransaction(opening);
          
         assertEquals(
-            "Assets should have a Transaction Amount of 300", 
             new BigDecimal("300.0"),
-            assets.getAmount("EUR")
+            assets.getAmount("EUR"),
+            "Assets should have a Transaction Amount of 300" 
         );
         
     }
