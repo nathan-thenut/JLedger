@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Account {
@@ -14,10 +15,10 @@ public class Account {
     private final Logger LOG = LoggerFactory.getLogger(Account.class);
 
     private Account parent;
-    private List<Account> children;
+    private Map<String, Account> children;
     private String name;
     private AccountType type;
-    private HashMap<String, BigDecimal> currencyAmountMap;
+    private Map<String, BigDecimal> currencyAmountMap;
     private List<Transaction> transactions = new ArrayList<>();
     
     public enum AccountType {
@@ -31,7 +32,7 @@ public class Account {
 
     public Account(String accountName, AccountType accountType) {
         this.name = accountName;
-        this.children = new ArrayList<>();
+        this.children = new HashMap<>();
         this.currencyAmountMap = new HashMap<>();
         this.type = accountType;
     }
@@ -68,7 +69,7 @@ public class Account {
             
             BigDecimal amount = BigDecimal.ZERO;
 
-            for (Account child : this.children) {
+            for (Account child : this.children.values()) {
                 amount = amount.add(child.getAmount(currency));
             }
 
@@ -84,6 +85,29 @@ public class Account {
 
     }
 
+    public Account findAccountByName(String name) {
+        LOG.debug("Account {}: Trying to find account {}", this.name, name);
+        if (this.children.get(name) != null) {
+            LOG.debug("Account {}: Found account {}", this.name, name);
+            return this.children.get(name);
+        } else if (!this.children.isEmpty()) {
+            for (String k : this.children.keySet()) {
+                if (k.equalsIgnoreCase(name)) {
+                    LOG.debug("Account {}: Found account {}", this.name, k);
+                    return this.children.get(k);
+                } else {
+                    Account current = this.children.get(k).findAccountByName(name);
+                    if (current != null) {
+                        LOG.debug("Account {}: Found account {}", this.name, current.getName());
+                        return current;
+                    }
+                }
+            }
+        }
+
+        LOG.debug("Account {}: Account not found: {}", this.name, name);
+        return null; 
+    }
     
     public void addTransaction(Transaction action) {
         this.transactions.add(action);
@@ -124,28 +148,32 @@ public class Account {
         this.parent = parent;
     }
 
-    public List<Account> getChildren() {
+    public Map<String, Account> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Account> children) {
+    public void setChildren(Map<String, Account> children) {
         this.children = children;
     }
 
     public void addChild(Account child) {
-        this.children.add(child);
+        this.children.put(child.getName(), child);
     }
 
     public void addChildren(List<Account> children) {
-        this.children.addAll(children);
+        children.forEach(c ->{
+            this.children.put(c.getName(), c);
+        });
     }
 
     public void removeChild(Account child) {
-        this.children.remove(child);
+        this.children.remove(child.getName(), child);
     }
 
     public void removeChildren(List<Account> children) {
-        this.children.removeAll(children);
+        children.forEach(c -> {
+            this.children.remove(c.getName(), c);
+        });
     }
 
     public AccountType getType() {
@@ -154,5 +182,37 @@ public class Account {
 
     public void setType(AccountType type) {
         this.type = type;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Account other = (Account) obj;
+
+        return (other.getName().equals(this.name)
+                && other.getChildren().equals(this.children)
+                && other.getParent().equals(this.parent)
+                && other.getType() == this.type
+                && other.getTransactions().equals(this.transactions));
+    }
+
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + this.name.hashCode();
+        hash = 23 * hash + this.children.hashCode();
+        hash = 23 * hash + this.parent.hashCode();
+        hash = 23 * hash + this.type.hashCode();
+        hash = 23 * hash + this.transactions.hashCode();
+        return hash;
     }
 }

@@ -9,19 +9,26 @@ import java.util.List;
 public class Ledger {
     
     private String name;
-    private List<Account> accounts;    
-    private List<Transaction> transactions;
+
+    private Account expensesRoot;
+    private Account incomeRoot;
+    private Account liabilitiesRoot;
+    private Account equityRoot;
+    private Account assetsRoot;
+
 
     public Ledger(String name) {
         this.name = name;
-        this.accounts = new ArrayList<>();
-        this.transactions = new ArrayList<>();
+
+        this.expensesRoot = new Account("Expenses", Account.AccountType.EXPENSES);
+        this.incomeRoot = new Account("Revenue", Account.AccountType.INCOME);
+        this.liabilitiesRoot = new Account("Liabilities", Account.AccountType.LIABILITIES);
+        this.equityRoot = new Account("Equity", Account.AccountType.EQUITY);
+        this.assetsRoot = new Account("Assets", Account.AccountType.ASSETS);
     }
 
-    public Ledger(String name, List<Account> accounts, List<Transaction> transactions) {
+    public Ledger(String name, List<Account> accounts) {
         this.name = name;
-        this.accounts = accounts;
-        this.transactions = transactions;
     }
 
 
@@ -33,19 +40,4 @@ public class Ledger {
         this.name = name;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
 }

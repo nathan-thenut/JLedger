@@ -3,5 +3,5 @@ Java Library to parse hledger's Journal Files. See http://hledger.org/journal.ht
 
 ## ToDo
 - toString Methods
-- more Tests
+- equals Methods
 - Parser
