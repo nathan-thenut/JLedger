@@ -6,9 +6,13 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import java.lang.IllegalArgumentException;
 
 public class Account {
    
@@ -22,11 +26,39 @@ public class Account {
     private List<Transaction> transactions = new ArrayList<>();
     
     public enum AccountType {
-        INCOME,
-        EXPENSES,
-        LIABILITIES,
-        EQUITY,
-        ASSETS
+        Income,
+        Expenses,
+        Liabilities,
+        Equity,
+        Assets,
+        Adjustment;
+
+        private static final Map<AccountType, Set<String>> ALT_NAMES = new HashMap<>();
+
+        static {
+            Set<String> incomeAltNames = new HashSet<>(){{
+                add("Revenue");
+            }};
+
+            ALT_NAMES.put(Income, incomeAltNames);
+        }
+
+        public static AccountType valueOfString(String name) {
+            for (AccountType t : values()) {
+                if(t.name().equals(name)) {
+                    return t;
+                }
+            }
+
+           for (AccountType t : ALT_NAMES.keySet()) {
+                if (ALT_NAMES.get(t).contains(name)) {
+                    return t;
+                }
+           } 
+
+            throw new IllegalArgumentException("Could not find AccountType for " + name);
+        }
+
     }
 
 
@@ -158,11 +190,13 @@ public class Account {
 
     public void addChild(Account child) {
         this.children.put(child.getName(), child);
+        child.setParent(this);
     }
 
     public void addChildren(List<Account> children) {
         children.forEach(c ->{
             this.children.put(c.getName(), c);
+            c.setParent(this);
         });
     }
 
@@ -214,5 +248,17 @@ public class Account {
         hash = 23 * hash + this.type.hashCode();
         hash = 23 * hash + this.transactions.hashCode();
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        String result = "Name: " + this.name + ", Children: " + this.children.keySet();
+
+        for (String child : this.children.keySet()) {
+            result += "\n";
+            result += this.children.get(child).toString();
+        }
+
+        return result;
     }
 }

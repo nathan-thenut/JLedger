@@ -7,6 +7,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,21 +49,53 @@ public class Parser {
         Ledger ledger = new Ledger("test");
         List<String> lines = readFile(filename);
 
-        List<Account> accounts = parseAccounts(lines);
+        Map<Account.AccountType, Account> accounts = parseAccounts(lines);
+       
+        System.out.println("Accounts: " + accounts);
+
+        ledger.updateAccounts(accounts);
 
         return ledger;
     }
 
-
-    private List<Account> parseAccounts(List<String> lines) {
-        List<Account> result = new ArrayList<>();
+    private Map<Account.AccountType, Account> parseAccounts(List<String> lines) {
+        Map<Account.AccountType, Account> result = new HashMap<>();
        
         List<String> matches = Keyword.ACCOUNT.findMatches(lines);
+        
+        System.out.println("Lines: " + lines);
+        System.out.println("Matches: " + matches);
+
 
         for (String match : matches) {
-            
-        }
+            String[] accounts = match.substring(8).split(":");
+            Account.AccountType type = Account.AccountType.valueOfString(accounts[0]);
 
+            
+            Account root = result.get(type);
+
+            if (root == null) {
+                root = new Account(accounts[0], type);
+                result.put(type, root);
+            }
+
+            for (int i = 1; i < accounts.length; i++) {
+                Account current = root.findAccountByName(accounts[i]);
+                if (current == null) {
+                    current = new Account(accounts[i], type);
+                    if (i == 1) {
+                        root.addChild(current);
+                    } else {
+                        Account parent = root.findAccountByName(accounts[i - 1]);
+                        if (parent != null) {
+                            parent.addChild(current);
+                        }
+                    }
+                }
+            }
+        }
+        
+        System.out.println("Result: " + result);
         return result;
     }
 }

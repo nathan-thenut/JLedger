@@ -13,7 +13,7 @@ public enum Keyword {
     
     ACCOUNT("account", "^account"),
     
-    TRANSACTION_BEGINNING("transaction beginning", "^[0-9]{4}[/-\\.][0-9]{2}[/-\\.][0-9]{2}");
+    TRANSACTION_BEGINNING("transaction beginning", "^[0-9]{4}[/-][0-9]{2}[/-][0-9]{2}");
 
     private String name;
     private Pattern pattern;
@@ -36,10 +36,7 @@ public enum Keyword {
     public List<String> findMatches(List<String> strings) {
             
         return strings.stream()
-            .filter(s -> {
-                Matcher matcher = this.pattern.matcher(s);
-                return matcher.matches();
-            })
+            .filter(this.pattern.asPredicate())
             .collect(Collectors.toList());
 
     } 

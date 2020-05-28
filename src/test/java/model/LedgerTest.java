@@ -13,9 +13,9 @@ public class LedgerTest {
     
     @Test 
     public void testOpeningTransaction() {
-        Account liabilities = new Account("Liabilities", Account.AccountType.LIABILITIES);
-        Account equity = new Account("Equity", Account.AccountType.EQUITY);
-        Account assets = new Account("Assets", Account.AccountType.ASSETS);
+        Account liabilities = new Account("Liabilities", Account.AccountType.Liabilities);
+        Account equity = new Account("Equity", Account.AccountType.Equity);
+        Account assets = new Account("Assets", Account.AccountType.Assets);
 
         Transaction opening = new Transaction(new Date(), "Opening transaction");
         List<Posting> additions = new ArrayList<>(); 
@@ -52,13 +52,13 @@ public class LedgerTest {
 
     @Test
     public void testAccountSearch() {
-        Account expenses = new Account("Expenses", Account.AccountType.EXPENSES);
-        Account utilities = new Account("Utilities", Account.AccountType.EXPENSES);
-        Account rent = new Account("Rent", Account.AccountType.EXPENSES);
-        Account entertainment = new Account("Entertainment", Account.AccountType.EXPENSES);
-        Account music = new Account("Music", Account.AccountType.EXPENSES);
-        Account recreation = new Account("Recreation", Account.AccountType.EXPENSES);
-        Account travel = new Account("travel", Account.AccountType.EXPENSES);
+        Account expenses = new Account("Expenses", Account.AccountType.Expenses);
+        Account utilities = new Account("Utilities", Account.AccountType.Expenses);
+        Account rent = new Account("Rent", Account.AccountType.Expenses);
+        Account entertainment = new Account("Entertainment", Account.AccountType.Expenses);
+        Account music = new Account("Music", Account.AccountType.Expenses);
+        Account recreation = new Account("Recreation", Account.AccountType.Expenses);
+        Account travel = new Account("travel", Account.AccountType.Expenses);
 
         utilities.addChild(rent);
 
@@ -98,5 +98,5 @@ public class LedgerTest {
         );
 
 
-    }
+    } 
 }

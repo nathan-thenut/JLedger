@@ -2,6 +2,8 @@ package jledger.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /*
  * This class represents a ledger file.
@@ -10,27 +12,19 @@ public class Ledger {
     
     private String name;
 
-    private Account expensesRoot;
-    private Account incomeRoot;
-    private Account liabilitiesRoot;
-    private Account equityRoot;
-    private Account assetsRoot;
-
+    private Map<Account.AccountType, Account> accountMap;
 
     public Ledger(String name) {
         this.name = name;
+        this.accountMap = new HashMap<>();
 
-        this.expensesRoot = new Account("Expenses", Account.AccountType.EXPENSES);
-        this.incomeRoot = new Account("Revenue", Account.AccountType.INCOME);
-        this.liabilitiesRoot = new Account("Liabilities", Account.AccountType.LIABILITIES);
-        this.equityRoot = new Account("Equity", Account.AccountType.EQUITY);
-        this.assetsRoot = new Account("Assets", Account.AccountType.ASSETS);
+        this.accountMap.put(Account.AccountType.Expenses, new Account("Expenses", Account.AccountType.Expenses));
+        this.accountMap.put(Account.AccountType.Income, new Account("Revenue", Account.AccountType.Income));
+        this.accountMap.put(Account.AccountType.Liabilities, new Account("Liabilities", Account.AccountType.Liabilities));
+        this.accountMap.put(Account.AccountType.Equity, new Account("Equity", Account.AccountType.Equity));
+        this.accountMap.put(Account.AccountType.Assets, new Account("Assets", Account.AccountType.Assets));
+        this.accountMap.put(Account.AccountType.Adjustment, new Account("Adjustment", Account.AccountType.Adjustment));
     }
-
-    public Ledger(String name, List<Account> accounts) {
-        this.name = name;
-    }
-
 
     public String getName() {
         return name;
@@ -40,4 +34,13 @@ public class Ledger {
         this.name = name;
     }
 
+    public void updateAccounts(Map<Account.AccountType, Account> updatedAccounts) {
+        for (Account.AccountType type : updatedAccounts.keySet()) {
+            this.accountMap.put(type, updatedAccounts.get(type));
+        }
+    }
+
+    public Map<Account.AccountType, Account> getAccounts() {
+        return this.accountMap;
+    }
 }
