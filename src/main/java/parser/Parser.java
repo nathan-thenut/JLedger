@@ -51,7 +51,7 @@ public class Parser {
 
         Map<Account.AccountType, Account> accounts = parseAccounts(lines);
        
-        System.out.println("Accounts: " + accounts);
+        LOG.debug("Accounts: " + accounts);
 
         ledger.updateAccounts(accounts);
 
@@ -63,8 +63,8 @@ public class Parser {
        
         List<String> matches = Keyword.ACCOUNT.findMatches(lines);
         
-        System.out.println("Lines: " + lines);
-        System.out.println("Matches: " + matches);
+        LOG.debug("Lines: " + lines);
+        LOG.debug("Matches: " + matches);
 
 
         for (String match : matches) {
@@ -95,7 +95,6 @@ public class Parser {
             }
         }
         
-        System.out.println("Result: " + result);
         return result;
     }
 }

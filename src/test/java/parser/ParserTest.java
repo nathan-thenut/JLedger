@@ -14,13 +14,19 @@ public class ParserTest {
     @Test
     public void testReadingFile() {
         Parser parser = new Parser();
-        Ledger test = parser.parseFile("test.journal");
+        Ledger test = parser.parseFile("test/accounts.journal");
 
         Map<Account.AccountType, Account> accounts = test.getAccounts();
-        //System.out.println("Accounts: " + accounts);
 
         assertTrue(accounts.get(Account.AccountType.Expenses).findAccountByName("Recreation") != null,
                 "Recreation account should be found");
+
+        assertTrue(accounts.get(Account.AccountType.Expenses).findAccountByName("Phone/Internet") != null,
+                "Phone/Internet account should be found");
+        
+        assertTrue(accounts.get(Account.AccountType.Expenses).findAccountByName("Wu Shu I") != null,
+                "Wu Shu I account should be found");
+
     }
 
 }
