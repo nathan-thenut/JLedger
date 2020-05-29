@@ -33,7 +33,7 @@ public class Parser {
         this.charset = charset;
     }
 
-    public List<String> readFile(String filename) {
+    public List<String> readFileIntoList(String filename) {
         List<String> result = new ArrayList<>();
         try {
             result = Files.readAllLines(Paths.get(filename), this.charset);
@@ -47,7 +47,7 @@ public class Parser {
     public Ledger parseFile(String filename) {
         
         Ledger ledger = new Ledger("test");
-        List<String> lines = readFile(filename);
+        List<String> lines = readFileIntoList(filename);
 
         Map<Account.AccountType, Account> accounts = parseAccounts(lines);
        
