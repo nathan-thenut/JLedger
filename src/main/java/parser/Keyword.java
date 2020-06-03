@@ -1,4 +1,4 @@
-package jledger.parser;
+package parser;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;

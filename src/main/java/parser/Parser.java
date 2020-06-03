@@ -1,4 +1,4 @@
-package jledger.parser;
+package parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,8 +13,8 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jledger.model.Ledger;
-import jledger.model.Account;
+import model.Ledger;
+import model.Account;
 
 /*
  * This class represents a parser for ledger files

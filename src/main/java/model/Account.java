@@ -1,4 +1,4 @@
-package jledger.model;
+package model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class Account {
         private static final Map<AccountType, Set<String>> ALT_NAMES = new HashMap<>();
 
         static {
-            Set<String> incomeAltNames = new HashSet<>(){{
+            Set<String> incomeAltNames = new HashSet<String>(){{
                 add("Revenue");
             }};
 

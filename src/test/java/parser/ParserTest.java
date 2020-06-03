@@ -1,13 +1,12 @@
-package jledger.parser;
+package parser;
 
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import jledger.model.Ledger;
-import jledger.model.Account;
+import model.Ledger;
+import model.Account;
 
 public class ParserTest {
    

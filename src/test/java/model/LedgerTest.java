@@ -1,10 +1,9 @@
-package jledger.model;
+package model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +17,7 @@ public class LedgerTest {
         Account assets = new Account("Assets", Account.AccountType.Assets);
 
         Transaction opening = new Transaction(new Date(), "Opening transaction");
-        List<Posting> additions = new ArrayList<>(); 
+        List<Posting> additions = new ArrayList<>();
         List<Posting> removals = new ArrayList<>(); 
         
         additions.add(new Posting(assets, new BigDecimal("150.0"), "EUR", opening));
@@ -62,13 +61,13 @@ public class LedgerTest {
 
         utilities.addChild(rent);
 
-        entertainment.addChildren(new ArrayList<>() {{
+        entertainment.addChildren(new ArrayList<Account>() {{
             add(music);
             add(recreation);
             add(travel);
         }});
 
-        expenses.addChildren(new ArrayList<>() {{
+        expenses.addChildren(new ArrayList<Account>() {{
             add(utilities);
             add(entertainment);
         }});
