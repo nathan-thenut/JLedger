@@ -1,8 +1,8 @@
 package model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ public class LedgerTest {
         Account equity = new Account("Equity", Account.AccountType.Equity);
         Account assets = new Account("Assets", Account.AccountType.Assets);
 
-        Transaction opening = new Transaction(new Date(), "Opening transaction");
+        Transaction opening = new Transaction(LocalDate.now(), "Opening transaction");
         List<Posting> additions = new ArrayList<>();
         List<Posting> removals = new ArrayList<>(); 
         

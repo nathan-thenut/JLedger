@@ -70,7 +70,7 @@ public class Account {
     }
  
 
-    private void calculateOverAllTransactionAmount() {
+    public void calculateOverAllTransactionAmount() {
 
         List<String> currencies = this.transactions.stream()
             .map(t -> t.getAllPostings())
@@ -78,7 +78,9 @@ public class Account {
             .map(p -> p.getCurrency())
             .distinct()
             .collect(Collectors.toList());
-        
+
+
+        //TODO: how to calculate the amount if you have no transactions but your children have some
         for (String currency : currencies) {
 
             BigDecimal additions = this.transactions.stream()
@@ -112,7 +114,10 @@ public class Account {
             LOG.debug("{} {} Amount after adding Children's removals: {}", this.name, currency, amount);
 
             currencyAmountMap.put(currency, amount);
-
+        }
+        //TODO: calculate new amount for parents too!
+        if (this.parent != null) {
+            this.parent.calculateOverAllTransactionAmount();
         }
 
     }

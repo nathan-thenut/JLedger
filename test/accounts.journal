@@ -38,3 +38,20 @@ account Revenue:Bonus
 account Revenue:Gifts Received
 account Revenue:Other Income
 account Revenue:Salary
+
+
+2020/01/01 opening balances
+    Assets:Cash Stash                 250 EUR = 250 EUR
+    Assets:Cash in Wallet           14.04 EUR = 14.04 EUR
+    Assets:Checking Norisbank         480 EUR = 480 EUR
+    Liabilities:Credit Card       -161.16 EUR = -161.16 EUR
+    Equity:Opening Balances       -582.88 EUR
+
+
+2020/01/02 Cash from Stash
+    Assets:Cash in Wallet       50.00 EUR
+    Assets:Cash Stash          -50.00 EUR
+
+2020/01/02 Rossmann
+    Expenses:Supplies            7.40 EUR
+    Assets:Cash in Wallet       -7.40 EUR

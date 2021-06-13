@@ -39,6 +39,36 @@ public class Ledger {
         }
     }
 
+
+    public Account findOrAddAccount(String fullAccountString) {
+        String[] accounts = fullAccountString.split(":");
+        Account.AccountType type = Account.AccountType.valueOfString(accounts[0]);
+
+        Account root = this.accountMap.get(type);
+
+        if (root == null) {
+            root = new Account(accounts[0], type);
+            this.accountMap.put(type, root);
+        }
+
+        Account current = null;
+        for (int i = 1; i < accounts.length; i++) {
+            current = root.findAccountByName(accounts[i]);
+            if (current == null) {
+                current = new Account(accounts[i], type);
+                if (i == 1) {
+                    root.addChild(current);
+                } else {
+                    Account parent = root.findAccountByName(accounts[i - 1]);
+                    if (parent != null) {
+                        parent.addChild(current);
+                    }
+                }
+            }
+        }
+        return current;
+    }
+
     public Map<Account.AccountType, Account> getAccounts() {
         return this.accountMap;
     }

@@ -1,11 +1,14 @@
 package parser;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -15,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import model.Ledger;
 import model.Account;
+import model.Posting;
+import model.Transaction;
 
 /*
  * This class represents a parser for ledger files
@@ -49,17 +54,16 @@ public class Parser {
         Ledger ledger = new Ledger("test");
         List<String> lines = readFileIntoList(filename);
 
-        Map<Account.AccountType, Account> accounts = parseAccounts(lines);
+        parseAccounts(ledger, lines);
        
-        LOG.debug("Accounts: " + accounts);
+        LOG.debug("Accounts: " + ledger.getAccounts());
 
-        ledger.updateAccounts(accounts);
+        parseTransactions(ledger, lines);
 
         return ledger;
     }
 
-    private Map<Account.AccountType, Account> parseAccounts(List<String> lines) {
-        Map<Account.AccountType, Account> result = new HashMap<>();
+    private void parseAccounts(Ledger ledger, List<String> lines) {
        
         List<String> matches = Keyword.ACCOUNT.findMatches(lines);
         
@@ -68,33 +72,48 @@ public class Parser {
 
 
         for (String match : matches) {
-            String[] accounts = match.substring(8).split(":");
-            Account.AccountType type = Account.AccountType.valueOfString(accounts[0]);
-
-            
-            Account root = result.get(type);
-
-            if (root == null) {
-                root = new Account(accounts[0], type);
-                result.put(type, root);
-            }
-
-            for (int i = 1; i < accounts.length; i++) {
-                Account current = root.findAccountByName(accounts[i]);
-                if (current == null) {
-                    current = new Account(accounts[i], type);
-                    if (i == 1) {
-                        root.addChild(current);
-                    } else {
-                        Account parent = root.findAccountByName(accounts[i - 1]);
-                        if (parent != null) {
-                            parent.addChild(current);
-                        }
-                    }
-                }
-            }
+            ledger.findOrAddAccount(match.substring(8));
         }
-        
-        return result;
+
+    }
+
+    private void parseTransactions(Ledger ledger, List<String> lines) {
+        List<String> matches = Keyword.TRANSACTION_BEGINNING.findMatches(lines);
+
+        for (String match : matches) {
+            LOG.debug("Found Transaction: " + match);
+            // convert date to iso-date
+            LocalDate transactionDate = LocalDate.parse(match.substring(0,10).replace("/", "-"));
+            String description = match.substring(match.indexOf(' '));
+            LOG.debug("With date: " + transactionDate);
+            LOG.debug("With description: " + description);
+            Transaction currentTransaction = new Transaction(transactionDate, description);
+            List<Posting> additions = new ArrayList<>();
+            List<Posting> removals = new ArrayList<>();
+            //set posting index to the index of the first posting
+            int postingIndex = lines.indexOf(match) + 1;
+            while (postingIndex < lines.size() && lines.get(postingIndex).contains(":")) {
+                String[] accountAndAmount = lines.get(postingIndex).trim().split("\\s{2,}");
+                //TODO: assure that there are only two elements in the array
+                Account currentAccount = ledger.findOrAddAccount(accountAndAmount[0]);
+                //TODO: order of amount and currency can also be reversed
+                String[] amountAndCurrency = accountAndAmount[1].split("\\s");
+                if (accountAndAmount[1].contains("=")) {
+                    amountAndCurrency = accountAndAmount[1].split("=")[1].trim().split("\\s");
+                }
+                BigDecimal amount = new BigDecimal(amountAndCurrency[0]);
+                String currency = amountAndCurrency[1];
+                Posting currentPosting = new Posting(currentAccount, amount, currency, currentTransaction);
+                if (currentPosting.getType().equals(Posting.PostingType.ADDITION)) {
+                    additions.add(currentPosting);
+                } else {
+                    removals.add(currentPosting);
+                }
+                currentAccount.addTransaction(currentTransaction);
+                postingIndex++;
+            }
+            currentTransaction.addAdditions(additions);
+            currentTransaction.addRemovals(removals);
+        }
     }
 }

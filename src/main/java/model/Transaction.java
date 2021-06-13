@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +15,13 @@ public class Transaction {
     
     private final Logger LOG = LoggerFactory.getLogger(Transaction.class);
 
-    private Date date;
+    private LocalDate date;
     private String description;
     private List<Posting> additions;
     private List<Posting> removals;
 
 
-    public Transaction(Date transactionDate, String description) {
+    public Transaction(LocalDate transactionDate, String description) {
         this.date = transactionDate;
         this.description = description;
         this.additions = new ArrayList<>();
@@ -70,11 +70,11 @@ public class Transaction {
     }
     
     
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

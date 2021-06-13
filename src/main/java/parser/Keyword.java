@@ -12,7 +12,9 @@ import java.util.stream.Stream;
 public enum Keyword {
     
     ACCOUNT("account", "^account"),
-    
+    //TODO: implement default year and currency
+    DEFAULT_YEAR("default year", "^Y[0-9]{4}"),
+    DEFAULT_CURRENCY("default currency", ""),
     TRANSACTION_BEGINNING("transaction beginning", "^[0-9]{4}[/-][0-9]{2}[/-][0-9]{2}");
 
     private String name;
