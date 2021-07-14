@@ -39,6 +39,11 @@ public class Ledger {
         }
     }
 
+    public void updateBalances() {
+        for (Account account : this.accountMap.values()) {
+            account.calculateOverAllTransactionAmount();
+        }
+    }
 
     public Account findOrAddAccount(String fullAccountString) {
         String[] accounts = fullAccountString.split(":");

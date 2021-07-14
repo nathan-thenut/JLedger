@@ -72,13 +72,18 @@ public class Account {
 
     public void calculateOverAllTransactionAmount() {
 
+        List<Transaction> transactions = this.transactions;
+        for (Account child : this.children.values()) {
+            child.calculateOverAllTransactionAmount();
+            transactions.addAll(child.getTransactions());
+        }
+
         List<String> currencies = this.transactions.stream()
             .map(t -> t.getAllPostings())
             .flatMap(List::stream)
             .map(p -> p.getCurrency())
             .distinct()
             .collect(Collectors.toList());
-
 
         //TODO: how to calculate the amount if you have no transactions but your children have some
         for (String currency : currencies) {
@@ -116,9 +121,9 @@ public class Account {
             currencyAmountMap.put(currency, amount);
         }
         //TODO: calculate new amount for parents too!
-        if (this.parent != null) {
-            this.parent.calculateOverAllTransactionAmount();
-        }
+        //if (this.parent != null) {
+        //    this.parent.calculateOverAllTransactionAmount();
+        //}
 
     }
 
